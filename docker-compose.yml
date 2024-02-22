@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+
+  jira:
+    image: atlassian/jira-software:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - jira_data:/var/atlassian/application-data/jira
+    networks:
+      - jiranet
+    environment:
+      - JIRA_HOME=/var/atlassian/application-data/jira
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - jiranet
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+    networks:
+      - jiranet
+
+  nextjs:
+    build: ./nextjs_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./nextjs_app:/app
+    networks:
+      - jiranet
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - jiranet
+    depends_on:
+      - mysql
+      - nextjs
+      - mongo
+      - jira
+
+networks:
+  jiranet:
+
+volumes:
+  jira_data:
+  mongo_data:
