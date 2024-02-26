@@ -34,15 +34,6 @@ services:
     networks:
       - jiranet
 
-  nextjs:
-    build: ./nextjs_app
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./nextjs_app:/app
-    networks:
-      - jiranet
-
   nginx:
     image: nginx:latest
     ports:
@@ -53,7 +44,6 @@ services:
       - jiranet
     depends_on:
       - mysql
-      - nextjs
       - mongo
       - jira
 
