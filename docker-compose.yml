@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   jira:
-    image: atlassian/jira-software:latest
+    image: atlassian/jira-software:9.5.0-ubuntu-jdk11
     ports:
       - "8080:8080"
     volumes:
